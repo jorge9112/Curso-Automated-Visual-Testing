@@ -1,7 +1,8 @@
-import com.applitools.eyes.MatchLevel;
-import com.applitools.eyes.selenium.Eyes;
+package base;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -12,7 +13,7 @@ import java.util.Properties;
 public class BaseTests {
 
     protected static WebDriver driver;
-    protected static Eyes eyes;
+    protected static EyesManager eyesManager;
 
     @BeforeClass
     public static void setUp() {
@@ -25,27 +26,15 @@ public class BaseTests {
         }
 
         driver = new ChromeDriver();
-        initiateEyes();
+        eyesManager = new EyesManager(driver, "The Internet");
 
-        //Change this to your own directory
-        driver.get("https://the-internet.herokuapp.com/dynamic_content");
+
     }
 
     @AfterClass
     public static void tearDown() {
         driver.quit();
+        eyesManager.abort();
     }
 
-    private static void initiateEyes() {
-        eyes = new Eyes();
-        eyes.setApiKey(System.getProperty("applitools.api.key"));
-    }
-    public void validateWindow(){
-        eyes.open(driver, "The Internet",
-                Thread.currentThread().getStackTrace()[2].getMethodName());
-        eyes.setMatchLevel(MatchLevel.LAYOUT);
-        eyes.checkWindow();
-        eyes.close();
-
-    }
 }
